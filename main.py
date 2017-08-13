@@ -7,9 +7,6 @@ from PIL import Image
 from html.parser import HTMLParser
 
 
-WORKING_DIR = os.path.dirname(os.path.realpath(__file__))
-
-
 class StickerHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -36,13 +33,15 @@ class StickerHTMLParser(HTMLParser):
 
 
 def save(name, urls):
-    folder_path = os.path.join(WORKING_DIR, 'sticker-{}'.format(name))
+    working_dir = os.path.dirname(os.path.realpath(__file__))
+    folder_path = os.path.join(working_dir, 'sticker-{}'.format(name))
     count = 0
     image_path_list = []
     os.mkdir(folder_path) if not os.path.exists(folder_path) else None
     for url in urls:
         count += 1
-        sticker_path = os.path.join(folder_path, '{}-{}.png'.format(name, count))
+        sticker_path = os.path.join(
+            folder_path, '{}-{}.png'.format(name, count))
         with open(sticker_path, 'wb') as sticker:
             image = requests.get(url)
             [sticker.write(chunk) for chunk in image]
@@ -75,7 +74,8 @@ def resize(max_size, image_path_list):
 
 def main():
     url = sys.argv[1] if len(sys.argv) >= 2 else input('Your sticker url: ')
-    max_size = sys.argv[2] if len(sys.argv) >= 3 else input('Your resize size, input "no" for no resize: ')
+    max_size = sys.argv[2] if len(sys.argv) >= 3 else input(
+        'Your resize size, input "no" for no resize: ')
     res = requests.get(url)
     if res.status_code != 200:
         print('Get sticker page error, status code {}.'.format(res.status_code))
@@ -83,8 +83,10 @@ def main():
 
     parser = StickerHTMLParser()
     parser.feed(res.text)
-    count, folder_path, image_path_list = save(parser.sticker_name, parser.image_urls)
-    resize_reult = resize(max_size, image_path_list) if max_size != 'no' else 'no resize'
+    count, folder_path, image_path_list = save(
+        parser.sticker_name, parser.image_urls)
+    resize_reult = resize(
+        max_size, image_path_list) if max_size != 'no' else 'no resize'
 
     print('information:')
     print('  total: {}'.format(count))
