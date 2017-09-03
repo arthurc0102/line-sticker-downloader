@@ -85,13 +85,13 @@ def main():
     parser.feed(res.text)
     count, folder_path, image_path_list = save(
         parser.sticker_name, parser.image_urls)
-    resize_reult = resize(
+    resize_result = resize(
         max_size, image_path_list) if max_size != 'no' else 'no resize'
 
     print('information:')
     print('  total: {}'.format(count))
     print('  output path: {}'.format(folder_path))
-    print('  resize: {}'.format(resize_reult))
+    print('  resize: {}'.format(resize_result))
 
 
 if __name__ == '__main__':
